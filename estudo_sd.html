@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estudo: Sistemas Distribuídos</title>
+    <style>
+        :root {
+            /* Tema Vermelho/Rosa para SD */
+            --bg-color: #1a1a2e;
+            --card-bg: #16213e;
+            --accent-color: #e94560;
+            --text-color: #e94560;
+            --text-light: #f1f1f1;
+            --card-height: 420px;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-light);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        /* Navegação no Topo */
+        .top-nav {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .nav-btn {
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-weight: bold;
+            transition: 0.3s;
+            border: 2px solid transparent;
+        }
+
+        /* Botão Ativo (SD) */
+        .nav-btn.active {
+            background-color: var(--accent-color);
+            color: white;
+            box-shadow: 0 0 15px rgba(233, 69, 96, 0.4);
+        }
+
+        /* Botão Inativo */
+        .nav-btn.inactive {
+            border-color: #555;
+            color: #888;
+        }
+        .nav-btn.inactive:hover {
+            border-color: #0abde3; /* Cor de SO ao passar o mouse */
+            color: #0abde3;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 0 20px;
+        }
+
+        h1 {
+            font-size: 2rem;
+            color: var(--text-color);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 25px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background-color: transparent;
+            height: var(--card-height);
+            perspective: 1000px;
+            cursor: pointer;
+        }
+
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.8s;
+            transform-style: preserve-3d;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            border-radius: 15px;
+        }
+
+        .card.flipped .card-inner { transform: rotateY(180deg); }
+
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: 15px;
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .card-front {
+            background-color: var(--card-bg);
+            color: var(--text-light);
+            border: 1px solid var(--accent-color);
+        }
+
+        .question-badge {
+            background-color: var(--text-color);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin-bottom: 15px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .card-front h3 { font-size: 1.1rem; margin-bottom: 15px; }
+
+        .options-list {
+            text-align: left;
+            font-size: 0.9rem;
+            width: 100%;
+            background: rgba(0,0,0,0.3);
+            padding: 10px;
+            border-radius: 8px;
+            list-style: none;
+        }
+        .options-list li { margin-bottom: 5px; }
+
+        .instruction { margin-top: auto; font-size: 0.75rem; color: #aaa; }
+
+        .card-back {
+            background-color: var(--text-color);
+            background-image: linear-gradient(135deg, #e94560 0%, #c0273f 100%);
+            color: white;
+            transform: rotateY(180deg);
+            overflow-y: auto;
+            justify-content: flex-start;
+            text-align: left;
+        }
+
+        .card-back h3 {
+            width: 100%;
+            text-align: center;
+            border-bottom: 1px solid rgba(255,255,255,0.4);
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+
+        .answer-content { font-size: 1rem; width: 100%; }
+
+        /* Custom Scrollbar */
+        .card-back::-webkit-scrollbar { width: 6px; }
+        .card-back::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); }
+        .card-back::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.4); border-radius: 3px; }
+
+        footer { text-align: center; margin-top: 50px; color: #666; padding-bottom: 20px; }
+    </style>
+</head>
+<body>
+
+    <div class="top-nav">
+        <a href="#" class="nav-btn active">Sistemas Distribuídos</a>
+        <a href="estudo_so.html" class="nav-btn inactive">Ir para SO</a>
+    </div>
+
+    <header>
+        <h1>Revisão: Sistemas Distribuídos</h1>
+        <p style="color: #888; font-style: italic;">Lista 1 | Toque para virar</p>
+    </header>
+
+    <div class="container" id="app">
+        </div>
+
+    <footer>
+        Mulher do HS - Preparação para Prova
+    </footer>
+
+    <script>
+        const questions = [
+            {
+                id: 1,
+                q: "O que significa dizer que um Sistema Distribuído é transparente? Exemplifique.",
+                a: "Significa que o sistema <strong>oculta</strong> do usuário que os recursos estão distribuídos em computadores diferentes.<br><br><strong>Exemplos:</strong><br>• <em>Acesso:</em> Oculta diferenças de dados.<br>• <em>Localização:</em> Oculta onde o recurso está.<br>• <em>Replicação:</em> Oculta cópias extras.<br>• <em>Falhas:</em> Oculta erros e recuperação."
+            },
+            {
+                id: 2,
+                q: "Qual a motivação para projetar Sistemas Distribuídos Abertos?",
+                a: "Garantir <strong>Interoperabilidade</strong> (fazer sistemas de diferentes fornecedores trabalharem juntos) e <strong>Portabilidade</strong> (rodar aplicações em diferentes implementações sem mudar o código), através de interfaces padronizadas."
+            },
+            {
+                id: 3,
+                q: "Diferença entre SO de Rede vs. SO Distribuído",
+                a: "<strong>SO de Rede:</strong> O usuário sabe que existem vários computadores e precisa logar remotamente em cada um. Não há visão de sistema único.<br><br><strong>SO Distribuído:</strong> O usuário vê tudo como um <strong>sistema único</strong>. O middleware gerencia os recursos globalmente."
+            },
+            {
+                id: 4,
+                q: "Características da Arquitetura Cliente/Servidor de 3 camadas",
+                a: "Divisão lógica e física em três partes:<br>1. <strong>Interface</strong> (Cliente)<br>2. <strong>Lógica de Negócio</strong> (Servidor de Aplicação)<br>3. <strong>Dados</strong> (Banco de Dados)<br>Facilita o gerenciamento e escalabilidade vertical."
+            },
+            {
+                id: 5,
+                q: "Vantagens e Desvantagens de limitar threads no servidor",
+                a: "<strong>Vantagem:</strong> Evita sobrecarga de memória e trocas de contexto excessivas (estabilidade).<br><br><strong>Desvantagem:</strong> Pode limitar a concorrência. Se todas threads bloquearem (I/O), novos clientes ficam na fila esperando (latência alta)."
+            },
+            {
+                id: 6,
+                q: "Dois processos detectam falha do líder e iniciam Bully ao mesmo tempo. O que acontece?",
+                a: "Ambos enviam mensagens de eleição. O processo com o <strong>MAIOR ID</strong> receberá as mensagens, responderá 'OK' para os menores (parando a eleição deles) e vencerá, enviando 'Coordenador' para todos."
+            },
+            {
+                id: 7,
+                q: "É possível sincronizar relógios em rede local sem fonte externa? O que limita?",
+                a: "Sim, é possível fazer <strong>sincronização interna</strong> (fazer os relógios concordarem entre si, ex: Berkeley).<br><br><strong>Limitações:</strong><br>1. Latência variável da rede.<br>2. <em>Clock Drift</em> (o cristal continua desviando logo após o ajuste)."
+            },
+            {
+                id: 8,
+                q: "Diferenças principais: Arquitetura Cliente-Servidor (C/S) vs. Peer-to-Peer (P2P)",
+                a: "<strong>C/S (Vertical):</strong> Centralizado. Papéis distintos: Servidor fornece, Cliente consome. Gargalo no servidor.<br><br><strong>P2P (Horizontal):</strong> Descentralizado. Todos os nós (peers) são iguais: atuam como cliente e servidor simultaneamente. Mais robusto."
+            },
+            {
+                id: 9,
+                q: "Dois aspectos fundamentais que dificultam a sincronização de relógios",
+                a: "1. <strong>Latência da Rede:</strong> O tempo de viagem da mensagem varia e não é zero.<br>2. <strong>Deriva (Drift):</strong> Os cristais de hardware oscilam em frequências diferentes, descalibrando o tempo constantemente."
+            },
+            {
+                id: 10,
+                q: "Por que o NTP não ajusta o relógio diretamente? Como ele faz?",
+                a: "Ajustes bruscos ('saltos') podem quebrar a lógica de programas (ex: arquivos salvos 'no futuro').<br><br><strong>Solução:</strong> O ajuste é gradual (<em>slewing</em>). O SO acelera ou desacelera o relógio levemente até alinhar."
+            },
+            {
+                id: 11,
+                q: "Vantagem e Desvantagem da Exclusão Mútua Centralizada",
+                a: "<strong>Vantagem:</strong> Simples de implementar e garante justiça (ordem de chegada).<br><br><strong>Desvantagem:</strong> O coordenador vira um ponto único de falha e gargalo de desempenho."
+            },
+            {
+                id: 12,
+                q: "Exclusão Mútua em Anel: Vantagem de conhecer 2 vizinhos vs Tradeoff",
+                a: "<strong>Vantagem:</strong> Tolerância a falhas. Se o próximo vizinho cair, o anel não quebra (pula para o seguinte).<br><br><strong>Tradeoff:</strong> Maior overhead (custo) para manter a topologia da rede atualizada."
+            },
+            {
+                id: 13,
+                q: "Bully Algorithm (5 nós, líder falha). Melhor e Pior caso.",
+                a: "<strong>Melhor Caso:</strong> O 2º maior ID nota a falha. Ele vence imediatamente. (Poucas msgs)<br><br><strong>Pior Caso:</strong> O menor ID nota a falha. Eleição em cascata ocorre degrau por degrau até o maior vencer. (Muitas msgs - O(n²))"
+            },
+            {
+                id: 14,
+                q: "Escalabilidade é um objetivo principal. As três técnicas básicas são:",
+                type: "multiple-choice",
+                options: [
+                    "a) Esconder a latência; distribuição; replicação",
+                    "b) Centralização; replicação; comunicação síncrona",
+                    "c) Transparência; esconder latência; centralização",
+                    "d) Comunicação síncrona; distribuição; transparência"
+                ],
+                a: "<strong>Resposta Correta: A</strong><br><br>As técnicas para escalar (Scaling Techniques) segundo a teoria são:<br>1. <strong>Ocultar Latência</strong> (Comunicação assíncrona)<br>2. <strong>Distribuição</strong> (Dividir componentes/dados)<br>3. <strong>Replicação</strong> (Cópias para disponibilidade)"
+            }
+        ];
+
+        const container = document.getElementById('app');
+
+        questions.forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'card';
+            
+            let frontContent = `<h3>${item.q}</h3>`;
+            
+            if (item.type === 'multiple-choice') {
+                frontContent += `<ul class="options-list">
+                    ${item.options.map(opt => `<li>${opt}</li>`).join('')}
+                </ul>`;
+            }
+
+            card.innerHTML = `
+                <div class="card-inner">
+                    <div class="card-front">
+                        <span class="question-badge">Questão ${item.id}</span>
+                        ${frontContent}
+                        <p class="instruction">Toque para ver a resposta</p>
+                    </div>
+                    <div class="card-back">
+                        <h3>Resposta</h3>
+                        <div class="answer-content">${item.a}</div>
+                    </div>
+                </div>
+            `;
+
+            card.addEventListener('click', () => {
+                card.classList.toggle('flipped');
+            });
+
+            container.appendChild(card);
+        });
+    </script>
+</body>
+</html>

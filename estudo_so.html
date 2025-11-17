@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estudo: Sistemas Operacionais</title>
+    <style>
+        :root {
+            /* Tema Azul/Ciano para SO */
+            --bg-color: #0b1e27;
+            --card-bg: #132c38;
+            --accent-color: #00d2d3; 
+            --text-color: #0abde3;
+            --text-light: #f1f1f1;
+            --card-height: 420px;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-light);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        /* Navegação no Topo */
+        .top-nav {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .nav-btn {
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-weight: bold;
+            transition: 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .nav-btn.active {
+            background-color: var(--accent-color);
+            color: var(--bg-color);
+            box-shadow: 0 0 15px rgba(0, 210, 211, 0.4);
+        }
+
+        .nav-btn.inactive {
+            border-color: #555;
+            color: #888;
+        }
+        .nav-btn.inactive:hover {
+            border-color: var(--accent-color);
+            color: var(--accent-color);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 0 20px;
+        }
+
+        h1 {
+            font-size: 2rem;
+            color: var(--text-color);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 25px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background-color: transparent;
+            height: var(--card-height);
+            perspective: 1000px;
+            cursor: pointer;
+        }
+
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.8s;
+            transform-style: preserve-3d;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            border-radius: 15px;
+        }
+
+        .card.flipped .card-inner { transform: rotateY(180deg); }
+
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: 15px;
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Frente - Tema Azul */
+        .card-front {
+            background-color: var(--card-bg);
+            color: var(--text-light);
+            border: 1px solid var(--accent-color);
+        }
+
+        .question-badge {
+            background-color: var(--text-color);
+            color: var(--bg-color);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin-bottom: 15px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .card-front h3 { font-size: 1.1rem; margin-bottom: 15px; }
+        
+        /* Estilo especial para opções de múltipla escolha */
+        .options-list {
+            text-align: left;
+            font-size: 0.9rem;
+            width: 100%;
+            background: rgba(0,0,0,0.3);
+            padding: 10px;
+            border-radius: 8px;
+            list-style: none;
+        }
+        .options-list li { margin-bottom: 5px; }
+
+        .instruction { margin-top: auto; font-size: 0.75rem; color: #aaa; }
+
+        /* Verso - Gradiente Azul */
+        .card-back {
+            background-image: linear-gradient(135deg, #00d2d3 0%, #0abde3 100%);
+            color: #0b1e27; /* Texto escuro para contraste */
+            transform: rotateY(180deg);
+            overflow-y: auto;
+            justify-content: flex-start;
+            text-align: left;
+        }
+
+        .card-back h3 {
+            width: 100%;
+            text-align: center;
+            border-bottom: 1px solid rgba(0,0,0,0.2);
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+
+        .answer-content { font-size: 1rem; width: 100%; }
+        .answer-content strong { color: #000; }
+
+        /* Custom Scrollbar */
+        .card-back::-webkit-scrollbar { width: 6px; }
+        .card-back::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); }
+        .card-back::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.3); border-radius: 3px; }
+
+        footer { text-align: center; margin-top: 50px; color: #666; padding-bottom: 20px; }
+    </style>
+</head>
+<body>
+
+    <div class="top-nav">
+        <a href="estudo_sd.html" class="nav-btn inactive">Ir para SD</a>
+        <a href="#" class="nav-btn active">Sistemas Operacionais</a>
+    </div>
+
+    <header>
+        <h1>Revisão: Sistemas Operacionais</h1>
+        <p style="color: #888; font-style: italic;">Lista 2025-1 | Toque para virar</p>
+    </header>
+
+    <div class="container" id="app">
+        </div>
+
+    <footer>
+        Mulher do HS - Preparação para Prova
+    </footer>
+
+    <script>
+        const questions = [
+            {
+                id: 1,
+                q: "Defina o que é um Sistema Operacional e suas principais funções.",
+                a: "É um software que atua como intermediário entre o hardware e o usuário.<br><br><strong>Funções:</strong><br>1. Gerenciador de Recursos (CPU, Memória, Disco).<br>2. Interface de alto nível para o usuário e programas."
+            },
+            {
+                id: 2,
+                q: "Descreva os diferentes tipos de Sistemas Operacionais.",
+                a: "• <strong>Batch:</strong> Processamento em lote, sem interação.<br>• <strong>Tempo Compartilhado (Time-sharing):</strong> Multitarefa interativa.<br>• <strong>Tempo Real:</strong> Com restrições rígidas de tempo.<br>• <strong>Distribuído:</strong> Múltiplas máquinas, visão única.<br>• <strong>Embutido:</strong> Dedicado a dispositivos específicos."
+            },
+            {
+                id: 3,
+                q: "Defina interrupção. Quais os tipos e como é o processamento?",
+                a: "É um sinal enviado à CPU para parar a execução atual e tratar um evento.<br><strong>Tipos:</strong> Hardware (Timer, I/O) e Software (Trap/Erro).<br><strong>Processo:</strong> Salva o estado atual -> Carrega rotina de tratamento -> Restaura estado anterior."
+            },
+            {
+                id: 4,
+                q: "Qual a relação entre programa e processo?",
+                a: "<strong>Programa:</strong> Entidade passiva (arquivo no disco).<br><strong>Processo:</strong> Entidade ativa (programa em execução), possuindo contador de instruções, registradores e memória."
+            },
+            {
+                id: 5,
+                q: "O que é PCB? Qual o seu conteúdo típico?",
+                a: "<strong>Process Control Block (Bloco de Controle de Processo).</strong><br>É a estrutura de dados que o SO usa para gerenciar cada processo. Contém: ID, Estado (Pronto/Exec), PC (Program Counter), Registradores e Info de memória."
+            },
+            {
+                id: 6,
+                q: "Qual o propósito das chamadas de sistema (System Calls)?",
+                a: "Permitir que processos de usuário solicitem serviços do Kernel (SO) de forma segura, como ler arquivos, criar processos ou enviar dados para a rede."
+            },
+            {
+                id: 7,
+                q: "O que significa o processo sofrer preempção?",
+                a: "Significa que o SO interrompeu a execução do processo forçosamente (tirou a CPU dele) para dar lugar a outro processo (ex: fim do quantum de tempo ou interrupção de prioridade)."
+            },
+            {
+                id: 8,
+                q: "O que é um processo CPU Bound e um processo IO Bound?",
+                a: "• <strong>CPU Bound:</strong> Passa a maior parte do tempo fazendo cálculos (uso intenso de processador).<br>• <strong>IO Bound:</strong> Passa a maior parte do tempo esperando Entrada/Saída (disco, teclado, rede)."
+            },
+            {
+                id: 9,
+                q: "Defina Tempo de Vida e Tempo de Espera.",
+                a: "• <strong>Tempo de Vida (Turnaround):</strong> Tempo total desde a criação (chegada) até o fim do processo.<br>• <strong>Tempo de Espera:</strong> Soma dos períodos que o processo passou na fila de prontos aguardando a CPU."
+            },
+            {
+                id: 10,
+                q: "O que é Starvation?",
+                a: "É quando um processo pronto para executar nunca recebe a CPU, geralmente porque processos de maior prioridade continuam chegando e tomando a vez dele indefinidamente."
+            },
+            {
+                id: 11,
+                q: "O que é uma Thread?",
+                a: "É a menor unidade de utilização da CPU. Um processo pode ter várias threads compartilhando o mesmo espaço de memória e arquivos, mas cada uma tem seu próprio fluxo de execução."
+            },
+            {
+                id: 12,
+                q: "Por que o tempo médio de espera na fila FIFO é maior do que na fila SJF?",
+                type: "multiple-choice",
+                options: [
+                    "a) porque cada processo tem uma fatia de tempo",
+                    "b) porque com tarefas grandes primeiro o tempo diminui",
+                    "c) porque com tarefas pequenas primeiro o tempo médio diminui"
+                ],
+                a: "<strong>Resposta: C</strong><br>No SJF (Shortest Job First), executar as tarefas menores primeiro libera mais processos rapidamente, reduzindo drasticamente o tempo médio de espera de todos."
+            },
+            {
+                id: 13,
+                q: "Qual a diferença entre FCFS e Round Robin?",
+                a: "• <strong>FCFS (First-Come, First-Served):</strong> Não-preemptivo. Quem chega primeiro executa até terminar.<br>• <strong>Round Robin:</strong> Preemptivo. Cada processo ganha um tempo fixo (Quantum). Se não acabar, volta pro fim da fila."
+            },
+            {
+                id: 14,
+                q: "Qual a desvantagem de um Quantum muito grande?",
+                a: "O sistema passa a se comportar como um <strong>FCFS</strong>. A interatividade cai, pois processos curtos precisam esperar processos longos terminarem seu enorme quantum."
+            },
+            {
+                id: 15,
+                q: "Qual a desvantagem de um Quantum muito pequeno?",
+                a: "Causa excesso de <strong>Trocas de Contexto</strong> (Context Switching). O processador perde muito tempo salvando e restaurando estados em vez de executar programas úteis."
+            },
+            {
+                id: 16,
+                q: "Para que servem as Múltiplas Filas com Realimentação (Feedback)?",
+                a: "Para separar processos com comportamentos diferentes. Processos que usam muita CPU descem para filas de menor prioridade; processos I/O Bound ou interativos sobem de prioridade."
+            },
+            {
+                id: 17,
+                q: "Como definir a Eficiência (E) em função do Quantum (tq) e Troca de Contexto (ttc)?",
+                a: "A eficiência é a porcentagem de tempo útil:<br><br>$$ E = \\frac{t_q}{t_q + t_{tc}} $$<br><br>Quanto menor o quantum em relação à troca, pior a eficiência."
+            },
+            {
+                id: 18,
+                q: "O que é, para que serve e como funciona a técnica de Aging?",
+                a: "Serve para evitar <strong>Starvation</strong>. Funciona aumentando gradualmente a prioridade de processos que ficam muito tempo esperando na fila. Eventualmente, eles ganham a CPU."
+            },
+            {
+                id: 20,
+                q: "TUTORIAL GRÁFICO: Como desenhar os Gráficos de Gantt (Questão 20)",
+                a: "<strong>1. Eixo X:</strong> Tempo. <strong>Eixo Y:</strong> Processos.<br><br>• <strong>FCFS:</strong> Desenhe barras na ordem de chegada. Um só começa quando o outro termina.<br>• <strong>SJF:</strong> No tempo atual, olhe quem está na fila. Escolha o de MENOR duração.<br>• <strong>SRTF (Preemptivo):</strong> A cada segundo, se chegar alguém novo menor que o atual, troque!<br>• <strong>Round Robin:</strong> Dê fatias de tempo (Quantum). Se o processo não acabar, desenhe ele voltando depois.<br>• <strong>Prioridade:</strong> Sempre escolha o de maior prioridade disponível."
+            }
+        ];
+
+        const container = document.getElementById('app');
+
+        questions.forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'card';
+            
+            let frontContent = `<h3>${item.q}</h3>`;
+            
+            if (item.type === 'multiple-choice') {
+                frontContent += `<ul class="options-list">
+                    ${item.options.map(opt => `<li>${opt}</li>`).join('')}
+                </ul>`;
+            }
+
+            card.innerHTML = `
+                <div class="card-inner">
+                    <div class="card-front">
+                        <span class="question-badge">Questão ${item.id}</span>
+                        ${frontContent}
+                        <p class="instruction">Toque para ver a resposta</p>
+                    </div>
+                    <div class="card-back">
+                        <h3>Resposta</h3>
+                        <div class="answer-content">${item.a}</div>
+                    </div>
+                </div>
+            `;
+
+            card.addEventListener('click', () => {
+                card.classList.toggle('flipped');
+            });
+
+            container.appendChild(card);
+        });
+    </script>
+</body>
+</html>
